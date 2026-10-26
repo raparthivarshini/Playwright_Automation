@@ -100,7 +100,22 @@ await expect(couponMessage).toHaveText("* Coupon Applied");
 await expect(emailValidator).toHaveText(email);
 
 await page.locator(".action__submit").click();
-expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
+await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
 const orderID = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
-console.log(orderID)
+
+await page.locator("[routerlink*='myorders']").first().click();
+const productDetails = page.locator("tbody tr")
+const orderIds = productDetails.locator("[scope='row']")
+const orderCount = await orderIds.count();
+for(let i=0; i < orderCount; ++i)
+{
+  
+  if(orderID.includes(await orderIds.nth(i).textContent()))
+  {
+   await productDetails.nth(i).locator("button:has-text('View')").click();
+   break;
+  }
+}
+expect(orderID.includes(await page.locator(".col-text").textContent()));
+// await expect(page.locator(".title")).toHaveText(" ADIDAS ORIGINAL ");
 });
